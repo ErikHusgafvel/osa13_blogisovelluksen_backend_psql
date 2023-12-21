@@ -2,7 +2,7 @@ POST http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-  "username": "lotta.pyykonen10@gmail.com",
-  "name": "Lotta Pyykönen",
+  "username": "Taman_ei_pitaisi_toimia",
+  "name": "Taman Asih",
   "password": "Salainen"
 }
