@@ -4,6 +4,6 @@ Content-Type: application/json
 {
   "author": "Michael Chan",
   "url": "https://reactpatterns.com/",
-  "title": "React patterns",
+  "title":"React patterns",
   "likes": 7
 }
