@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const { ValidationError } = require('sequelize');
-const Blog = require('../models/blogs');
+const { Blog } = require('../models');
 
 router.get('/', async (req, res) => {
   const blogs = await Blog.findAll();
@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
 
 const blogFinder = async (req, res, next) => {
   req.blog = await Blog.findByPk(req.params.id);
-  if (!req.blog) throw new ReferenceError();
+  if (!req.blog) throw new Error('NOT FOUND');
   next();
 };
 
@@ -25,9 +25,7 @@ router.put('/:id', blogFinder, async (req, res) => {
     await req.blog.save();
     res.status(200).json(req.blog);
   } else {
-    throw new ValidationError(
-      '"likes" must be not-null and non-negative value'
-    );
+    throw new ValidationError('likes must be a non-negative value');
   }
 });
 
