@@ -30,7 +30,7 @@ router.put('/:username', async (req, res) => {
       username: req.params.username,
     },
   });
-  if (!user) throw new Error('NOT FOUND');
+  if (!user) throw new Error('user not found');
   if (req.body.name) {
     user.name = req.body.name;
     await user.save();

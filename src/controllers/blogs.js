@@ -14,8 +14,14 @@ const tokenExtractor = async (req, res, next) => {
       process.env.SECRET
     );
   } else {
-    return res.status(401).json({ error: 'invalid token' });
+    return res.status(401).json({ error: 'token missing or invalid' });
   }
+  next();
+};
+
+const blogFinder = async (req, res, next) => {
+  req.blog = await Blog.findByPk(req.params.id);
+  if (!req.blog) throw new Error('blog not found');
   next();
 };
 
@@ -30,12 +36,6 @@ router.post('/', tokenExtractor, async (req, res) => {
   res.status(201).json(blog);
 });
 
-const blogFinder = async (req, res, next) => {
-  req.blog = await Blog.findByPk(req.params.id);
-  if (!req.blog) throw new Error('NOT FOUND');
-  next();
-};
-
 router.put('/:id', blogFinder, async (req, res) => {
   if (req.body.likes && req.body.likes >= 0) {
     req.blog.likes = req.body.likes;
@@ -46,9 +46,14 @@ router.put('/:id', blogFinder, async (req, res) => {
   }
 });
 
-router.delete('/:id', blogFinder, async (req, res) => {
-  req.blog.destroy();
-  return res.status(204).end();
+router.delete('/:id', tokenExtractor, blogFinder, async (req, res) => {
+  const user = await User.findByPk(req.decodedToken.id);
+  if (user.id === req.blog.userId) {
+    await req.blog.destroy();
+    return res.status(204).end();
+  } else {
+    return res.status(401).json({ error: 'unauthorized action' });
+  }
 });
 
 module.exports = router;
