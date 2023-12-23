@@ -3,10 +3,15 @@ require('dotenv').config();
 const router = require('express').Router();
 const { User } = require('../models');
 const { ValidationError, Error } = require('sequelize');
+const Blog = require('../models/blog');
 
 router.get('/', async (req, res) => {
   const users = await User.findAll({
     attributes: { exclude: ['id', 'passwordHash'] },
+    include: {
+      model: Blog,
+      attributes: { exclude: ['userId'] },
+    },
   });
   res.json(users);
 });
