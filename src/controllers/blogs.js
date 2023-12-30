@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
 
 const { ValidationError } = require('sequelize');
 const { Blog } = require('../models');
@@ -26,12 +27,21 @@ const blogFinder = async (req, res, next) => {
 };
 
 router.get('/', async (req, res) => {
+  const where = {};
+
+  if (req.query.search) {
+    where.title = {
+      [Op.iLike]: `%${req.query.search}%`,
+    };
+  }
+
   const blogs = await Blog.findAll({
     attributes: { exclude: ['userId'] },
     include: {
       model: User,
       attributes: ['name'],
     },
+    where,
   });
   res.json(blogs);
 });
@@ -42,7 +52,7 @@ router.post('/', tokenExtractor, async (req, res) => {
   res.status(201).json(blog);
 });
 
-router.put('/:id', blogFinder, async (req, res) => {
+router.put('/:id', tokenExtractor, blogFinder, async (req, res) => {
   if (req.body.likes && req.body.likes >= 0) {
     req.blog.likes = req.body.likes;
     await req.blog.save();
