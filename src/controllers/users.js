@@ -1,9 +1,8 @@
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const router = require('express').Router();
-const { User } = require('../models');
+const { User, Blog } = require('../models');
 const { ValidationError, Error } = require('sequelize');
-const Blog = require('../models/blog');
 
 router.get('/', async (req, res) => {
   const users = await User.findAll({
