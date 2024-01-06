@@ -24,4 +24,24 @@ router.post('/', tokenExtractor, async (req, res) => {
   }
 });
 
+router.put('/:id', tokenExtractor, async (req, res) => {
+  if (typeof req.body.read === 'undefined') {
+    return res.status(400).json({ error: "body missing value for 'read'" });
+  }
+
+  const reading = await Readings.findByPk(req.params.id);
+
+  if (!reading) {
+    res.status(404).json({ error: 'resource with given id not found' });
+  }
+
+  if (req.decodedToken.id === reading.userId) {
+    reading.read = req.body.read;
+    await reading.save();
+    res.status(201).json(reading);
+  } else {
+    return res.status(401).json({ error: 'unauthorized action' });
+  }
+});
+
 module.exports = router;
