@@ -4,6 +4,26 @@ const router = require('express').Router();
 const { User, Blog } = require('../models');
 const { ValidationError, Error } = require('sequelize');
 
+router.get('/:id', async (req, res) => {
+  const user = await User.findByPk(req.params.id, {
+    attributes: { exclude: ['id', 'passwordHash', 'createdAt', 'updatedAt'] },
+    include: {
+      model: Blog,
+      as: 'markedBlogs',
+      attributes: { exclude: ['createdAt', 'updatedAt', 'userId'] },
+      through: {
+        attributes: [],
+      },
+    },
+  });
+
+  if (user) {
+    res.status(201).json(user);
+  } else {
+    res.status(404).json({ error: 'user with given id not found' });
+  }
+});
+
 router.get('/', async (req, res) => {
   const users = await User.findAll({
     attributes: { exclude: ['id', 'passwordHash'] },
