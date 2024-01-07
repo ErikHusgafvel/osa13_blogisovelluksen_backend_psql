@@ -5,6 +5,17 @@ const { User, Blog } = require('../models');
 const { ValidationError, Error } = require('sequelize');
 
 router.get('/:id', async (req, res) => {
+  let where = {};
+
+  if (typeof req.query.read !== 'undefined') {
+    if (!(req.query.read === 'true' || req.query.read === 'false')) {
+      return res.status(400).json({ error: "bad user input for value 'read'" });
+    }
+    where = {
+      read: req.query.read,
+    };
+  }
+
   const user = await User.findByPk(req.params.id, {
     attributes: { exclude: ['id', 'passwordHash', 'createdAt', 'updatedAt'] },
     include: {
@@ -13,6 +24,7 @@ router.get('/:id', async (req, res) => {
       attributes: { exclude: ['createdAt', 'updatedAt', 'userId'] },
       through: {
         attributes: ['id', 'read'],
+        where,
       },
     },
   });
