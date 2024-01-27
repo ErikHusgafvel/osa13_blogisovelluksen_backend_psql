@@ -16,11 +16,13 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: { model: 'users', key: 'id' },
+        onDelete: 'cascade',
       },
       blog_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: { model: 'blogs', key: 'id' },
+        onDelete: 'cascade',
       },
     });
   },

@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const router = require('express').Router();
 
@@ -15,14 +14,17 @@ router.post('/', async (req, res) => {
     return res.status(401).json({ error: 'invalid username or password' });
   }
 
-  const userForToken = {
+  if (user.disabled) {
+    return res.status(403).json({ error: 'user disabled - contact admin' });
+  }
+
+  req.session.userId = user.id;
+  await req.session.save();
+
+  res.status(200).json({
     username: user.username,
-    id: user.id,
-  };
-
-  const token = jwt.sign(userForToken, process.env.SECRET);
-
-  res.status(200).json({ token, username: user.username, name: user.name });
+    name: user.name,
+  });
 });
 
 module.exports = router;

@@ -3,6 +3,7 @@ require('dotenv').config();
 const router = require('express').Router();
 const { User, Blog } = require('../models');
 const { ValidationError, Error } = require('sequelize');
+const { sessionExtractor } = require('../utils/middleware');
 
 router.get('/:id', async (req, res) => {
   let where = {};
@@ -36,9 +37,9 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
   const users = await User.findAll({
-    attributes: { exclude: ['id', 'passwordHash'] },
+    attributes: { exclude: ['passwordHash'] },
     include: {
       model: Blog,
       attributes: { exclude: ['userId'] },
@@ -60,12 +61,16 @@ router.post('/', async (req, res) => {
   res.status(201).json(user);
 });
 
-router.put('/:username', async (req, res) => {
+router.put('/:username', sessionExtractor, async (req, res) => {
   const user = await User.findOne({
+    attributes: { exclude: ['passwordHash', 'createdAt', 'updatedAt'] },
     where: {
       username: req.params.username,
     },
   });
+  if (user.id !== req.userId) {
+    return res.status(401).json({ error: 'unauthorized action' });
+  }
   if (!user) throw new Error('user not found');
   if (req.body.name) {
     user.name = req.body.name;

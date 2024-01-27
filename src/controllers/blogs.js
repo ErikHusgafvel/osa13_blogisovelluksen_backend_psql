@@ -5,9 +5,10 @@ const { ValidationError } = require('sequelize');
 const { Blog } = require('../models');
 const User = require('../models/user');
 
-const { tokenExtractor } = require('../utils/middleware');
+const { sessionExtractor } = require('../utils/middleware');
 
-const blogFinder = async (req, res, next) => {
+const blogFinder = async (req, _res, next) => {
+  console.log(req.params.id);
   req.blog = await Blog.findByPk(req.params.id);
   if (!req.blog) throw new Error('blog not found');
   next();
@@ -45,14 +46,18 @@ router.get('/', async (req, res) => {
   res.json(blogs);
 });
 
-router.post('/', tokenExtractor, async (req, res) => {
-  const user = await User.findByPk(req.decodedToken.id);
+router.post('/', sessionExtractor, async (req, res) => {
+  console.log(req.userId);
+  const user = await User.findByPk(req.userId);
   const blog = await Blog.create({ ...req.body, userId: user.id });
   res.status(201).json(blog);
 });
 
-router.put('/:id', tokenExtractor, blogFinder, async (req, res) => {
-  if (req.body.likes && req.body.likes >= 0) {
+router.put('/:id', sessionExtractor, blogFinder, async (req, res) => {
+  if (req.userId !== req.blog.userId) {
+    return res.status(401).json({ error: 'unauthorized action' });
+  }
+  if (typeof req.body.likes !== 'undefined' && req.body.likes >= 0) {
     req.blog.likes = req.body.likes;
     await req.blog.save();
     res.status(200).json(req.blog);
@@ -61,8 +66,8 @@ router.put('/:id', tokenExtractor, blogFinder, async (req, res) => {
   }
 });
 
-router.delete('/:id', tokenExtractor, blogFinder, async (req, res) => {
-  const user = await User.findByPk(req.decodedToken.id);
+router.delete('/:id', sessionExtractor, blogFinder, async (req, res) => {
+  const user = await User.findByPk(req.userId);
   if (user.id === req.blog.userId) {
     await req.blog.destroy();
     return res.status(204).end();
