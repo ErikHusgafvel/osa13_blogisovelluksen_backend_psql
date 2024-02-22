@@ -1,10 +1,7 @@
-const jwt = require('jsonwebtoken');
 const Session = require('../models/session');
 const { User } = require('../models');
 
 const errorHandler = (error, req, res, next) => {
-  console.error(error.message);
-
   switch (error.name) {
     case 'SequelizeValidationError':
       return res.status(400).json({

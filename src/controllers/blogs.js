@@ -8,7 +8,6 @@ const User = require('../models/user');
 const { sessionExtractor } = require('../utils/middleware');
 
 const blogFinder = async (req, _res, next) => {
-  console.log(req.params.id);
   req.blog = await Blog.findByPk(req.params.id);
   if (!req.blog) throw new Error('blog not found');
   next();
@@ -47,7 +46,6 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', sessionExtractor, async (req, res) => {
-  console.log(req.userId);
   const user = await User.findByPk(req.userId);
   const blog = await Blog.create({ ...req.body, userId: user.id });
   res.status(201).json(blog);

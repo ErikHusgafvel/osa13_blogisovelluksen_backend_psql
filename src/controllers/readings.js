@@ -41,7 +41,6 @@ router.put('/:id', sessionExtractor, async (req, res) => {
   }
 
   const reading = await Readings.findByPk(req.params.id);
-  console.log(reading);
 
   if (!reading) {
     return res.status(404).json({ error: 'resource with given id not found' });
