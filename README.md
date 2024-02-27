@@ -13,3 +13,5 @@ The app supports
 - Creating a reading list, which is a ManyToMany-relationship table between Users and Blogs. Reading list enables User to save interesting Blogs to a list. By default the Blog is set to "unread", but user can change the status to "read" later.
 
 #### 🔖 Key-words: postgres, sequelize, express, bcrypt, express-session, connect-session-sequelize, cross-env, umzug, uuid, nodemon
+
+<img src="https://github.com/ErikHusgafvel/HY-MOOC-Full-stack-development/blob/master/certificate-psql.png" alt="Postgres certificate"/>
