@@ -2,7 +2,7 @@
 
 Postgres database with Fly.io and Sequelize. The app utilizes server-side session management (with express-session and connect-session-sequelize libraries). Changes to the database have been introduced through migrations. The app handles errors quite extensively and uses express-async-errors under the hood.
 <p align="center">
-  <img src="https://github.com/ErikHusgafvel/HY-MOOC-Full-stack-development/blob/master/certificate-psql.png" alt="Postgres certificate" width="600"/>
+  <img src="https://github.com/ErikHusgafvel/HY-MOOC-Full-stack-development/blob/master/certificate-psql.png" alt="Postgres certificate" width="500"/>
 </p>
 
 The app supports
