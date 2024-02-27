@@ -10,4 +10,4 @@ Postgres database with Fly.io and Sequelize. The app utilizes server-side sessio
 - Querying all Authors, which returns Authors and the titles of all the Blogs that belong to the Author. Authors are returned in the order of likes their Blogs have received (sums the likes of Blogs belonging to Author)
 - Creating a reading list, which is a ManyToMany-relationship table between Users and Blogs. Reading list enables User to save interesting Blogs to a list. By default the Blog is set to "unread", but user can change the status to "read" later.
 
-# Key-words: postgres, sequelize, express, bcrypt, express-session, connect-session-sequelize, cross-env, umzug, uuid, nodemon
+## Key-words: postgres, sequelize, express, bcrypt, express-session, connect-session-sequelize, cross-env, umzug, uuid, nodemon
