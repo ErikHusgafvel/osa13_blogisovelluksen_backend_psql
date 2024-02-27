@@ -4,6 +4,7 @@ Postgres database with Fly.io and Sequelize. The app utilizes server-side sessio
 <p align="center">
   <img src="https://github.com/ErikHusgafvel/HY-MOOC-Full-stack-development/blob/master/certificate-psql.png" alt="Postgres certificate" width="600"/>
 </p>
+
 The app supports
 - Creating a User, logging in and logging out. User's status may be set to "disabled" after which no actions are allowed for the User as long as the "disabled"-switch is true. Logging in creates a session, which outdates in two days. Actions with outdated session key are not allowed. Logging out destroys all sessions from the database for the user in question
 - Querying either all Blogs or specific Blogs based on titles and/or authors that match a query parameter
